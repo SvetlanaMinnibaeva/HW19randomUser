@@ -1,8 +1,6 @@
 package patPerson;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
-
 import java.net.URI;
 import java.net.http.*;
 import java.time.ZonedDateTime;
@@ -15,7 +13,7 @@ public class ApiPerson {
 
         HttpClient httpClient = HttpClient.newHttpClient();
         HttpRequest httpRequest = HttpRequest.newBuilder().GET().
-                uri(URI.create("https://randomuser.me/api/?results=5000")).build();
+                uri(URI.create("https://randomuser.me/api/?results=1000")).build();
         HttpResponse<String> httpResponse = null;
         try {
             httpResponse = httpClient.
@@ -30,11 +28,13 @@ public class ApiPerson {
 
 
     public ArrayList<Person> parsePersonResponse(String response) {
-        JSONArray fullData = new JSONObject(response).getJSONArray("results");
         ArrayList<Person> persons = new ArrayList<>();
-        for (int i = 0; i < fullData.length(); i++) {
-            JSONObject personJSON = fullData.getJSONObject(i);
+        int infoCount = new JSONObject(response).getJSONObject("info").getInt("results");
+
+        for (int i = 0; i < infoCount; i++) {
             Person person = new Person();
+            JSONObject personJSON = new JSONObject(response).getJSONArray("results").getJSONObject(i);
+
             person.setGender(personJSON.getString("gender"));
             person.setFirstName(personJSON.getJSONObject("name").getString("first"));
             person.setLastName(personJSON.getJSONObject("name").getString("last"));
@@ -44,6 +44,7 @@ public class ApiPerson {
             ZonedDateTime zonedDateTime = ZonedDateTime.
                     parse(personJSON.getJSONObject("dob").getString("date"));
             person.setDob(zonedDateTime.toLocalDateTime());
+            person.setAge(personJSON.getJSONObject("dob").getInt("age"));
             persons.add(person);
         }
         return persons;

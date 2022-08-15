@@ -1,6 +1,7 @@
 package patPerson;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class Person {
     private String gender;
@@ -11,10 +12,21 @@ public class Person {
     private String email;
     private LocalDateTime dob;
 
+    private Integer age;
+
     public Person() {
     }
 
-    public Person(String gender, String firstName, String lastName, String country, String city, String email, LocalDateTime dob) {
+    public Person(
+            String gender,
+            String firstName,
+            String lastName,
+            String country,
+            String city,
+            String email,
+            LocalDateTime dob,
+            Integer age
+    ) {
         this.gender = gender;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -22,6 +34,7 @@ public class Person {
         this.email = email;
         this.dob = dob;
         this.city = city;
+        this.age = age;
     }
 
     public String getGender() {
@@ -38,6 +51,14 @@ public class Person {
 
     public String getCity() {
         return city;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
     }
 
     public void setCity(String city) {
@@ -93,7 +114,8 @@ public class Person {
         if (country != null ? !country.equals(person.country) : person.country != null) return false;
         if (city != null ? !city.equals(person.city) : person.city != null) return false;
         if (email != null ? !email.equals(person.email) : person.email != null) return false;
-        return dob != null ? dob.equals(person.dob) : person.dob == null;
+        if (dob != null ? !dob.equals(person.dob) : person.dob != null) return false;
+        return age != null ? age.equals(person.age) : person.age == null;
     }
 
     @Override
@@ -105,19 +127,26 @@ public class Person {
         result = 31 * result + (city != null ? city.hashCode() : 0);
         result = 31 * result + (email != null ? email.hashCode() : 0);
         result = 31 * result + (dob != null ? dob.hashCode() : 0);
+        result = 31 * result + (age != null ? age.hashCode() : 0);
         return result;
     }
 
     @Override
     public String toString() {
-        return "Person{" +
-                "gender='" + gender + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", country='" + country + '\'' +
-                ", city='" + city + '\'' +
-                ", email='" + email + '\'' +
-                ", dob=" + dob +
-                '}' + "\n";
+        return this.getGender().equals("male")
+                ?
+                "Мистер " +
+                        lastName + '.' +
+                        " Pодом из " + country + '.' + " " +
+                        dob.getYear() + " года рождения." +
+                        " Связаться по email " + email + '.'
+                :
+
+                "Мисcис " +
+                        lastName + '.' +
+                        " Pодом из " + country + '.' + " " +
+                        dob.getYear() + " года рождения." +
+                        " Связаться по email " + email + '.';
+
     }
 }

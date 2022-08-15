@@ -5,41 +5,57 @@ import java.util.List;
 
 public class PersonSort {
     public static void filter(ApiPerson api, Check<Person> check) {
-        List<Person> personList = new ArrayList<>();
-        for (Person p : personList) {
-            if (check.test(p)) {
-                System.out.println(p);
-            }
-        }
+        List<Person> personsFromJSON = api.getApiPersonFromRequest();
+        personsFromJSON.stream()
+                .filter(check::test)
+                .forEach(System.out::println);
+
     }
 
     public static void filterByCountry(ApiPerson api, CheckByCountry<Person> check) {
-        List<Person> personList = api.getApiPersonFromRequest();
-        for (Person p : personList) {
-            if (check.checkByCountry(p)) {
-                System.out.println(p);
-            }
-        }
+        List<Person> personsFromJSON = api.getApiPersonFromRequest();
+        personsFromJSON.stream()
+                .filter(check::checkByCountry)
+                .forEach(System.out::println);
     }
 
     public static void filterByCityAndCount(
             ApiPerson api,
             CheckByCityAndCount<Person> check,
-            int count
+            Integer count
     ) throws InterruptedException {
         List<Person> personsList = new ArrayList<>();
-
         while (personsList.size() < count) {
-            Thread.sleep(2000);
             List<Person> personsFromJSON = api.getApiPersonFromRequest();
-
-            for (Person p : personsFromJSON) {
-                if (check.checkByCityAndCount(p)) {
-                    personsList.add(p);
-                    System.out.println(p);
-                }
-            }
+            personsFromJSON.stream()
+                    .filter(check::checkByCityAndCount)
+                    .forEach(p -> {
+                        personsList.add(p);
+                        System.out.println(p);
+                    });
         }
     }
+
+    public static void filterByAge(ApiPerson api, CheckByAge<Person> check) {
+        List<Person> personsFromJSON = api.getApiPersonFromRequest();
+        personsFromJSON.stream()
+                .filter(check::checkByAge)
+                .forEach(System.out::println);
+    }
+
+    public static void filterByAgeInBetween(ApiPerson api, CheckAgeInBetweenCount<Person> check) {
+        List<Person> personsFromJSON = api.getApiPersonFromRequest();
+        long count = personsFromJSON.stream()
+                .filter(check::checkAgeInBetweenCount)
+                .count();
+        System.out.println(count);
+    }
 }
+
+
+
+
+
+
+
 
